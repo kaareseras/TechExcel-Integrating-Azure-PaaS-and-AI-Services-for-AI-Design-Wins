@@ -70,9 +70,10 @@ builder.Services.AddSingleton<Kernel>((_) =>
 });
 
 
-// Create a single instance of the AzureOpenAIClient to be shared across the application.
+// // Create a single instance of the AzureOpenAIClient to be shared across the application.
 builder.Services.AddSingleton<AzureOpenAIClient>((_) =>
 {
+
     var endpoint = new Uri(builder.Configuration["AzureOpenAI:Endpoint"]!);
     var credentials = new AzureKeyCredential(builder.Configuration["AzureOpenAI:ApiKey"]!);
 
@@ -138,8 +139,17 @@ app.MapPost("/Chat", async Task<string> (HttpRequest request) =>
     {
         ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
     };
-    var response = await chatCompletionService.GetChatMessageContentAsync(message.ToString(), executionSettings, kernel);
-    return response?.Content!;
+    try
+    {
+        var response = await chatCompletionService.GetChatMessageContentAsync(message.ToString(), executionSettings, kernel);
+        return response?.Content!;
+    }
+    catch (Exception ex)
+    {
+        // Log the exception or handle it as needed
+        return $"An error occurred: {ex.Message}";
+    }
+    // return response?.Content!;
 })
     .WithName("Chat")
     .WithOpenApi();
