@@ -47,7 +47,7 @@ public class DatabaseService(string connectionString) : IDatabaseService
     /// <summary>
     /// Get a specific hotel from the database.
     /// </summary>
-    [KernelFunction]
+    [KernelFunction("get_hotels")]
     [Description("Gett bookings for a hotel.")]
     public async Task<IEnumerable<Booking>> GetBookingsForHotel(int hotelId)
     {
